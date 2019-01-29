@@ -1,9 +1,19 @@
 <?php
 class Usuario {
+//------------------------------ATRIBUTOS----------------------------------------------------	
 	private $idusuario ;
 	private $deslogin ;
 	private $dessenha ;
 	private $dtcadastro ;
+//--------------------------------------
+
+
+
+
+
+
+
+//---------------------------------------SELECT-------------------------------------------
 
 	public function getUser($id){
 		$sql = new Sql();
@@ -22,17 +32,57 @@ class Usuario {
 		}
 
 	}
+	public static function getList(){
+
+		$sql = new Sql();
+		return $sql->select("SELECT * FROM tb_usuarios ORDER BY deslogin ; ");
+
+	}
+	public static function search($login){
+		$sql = new Sql();
+		return $sql->select("SELECT * FROM tb_usuarios WHERE deslogin LIKE :SEARC ORDER BY deslogin ", array(
+			':SEARC'=> "%".$login."%"
+		)) ;
+	}
+	public function login($login , $pass){
+		$sql = new Sql();
+
+		$result = $sql->select(" SELECT * FROM tb_usuarios WHERE deslogin = :LOG AND dessenha = :PASS " , array(
+			":LOG"=>$login,
+			":PASS"=>$pass 
+		));
+
+		if(isset($result)){
+			$row = $result[0];
+
+			$this->setId($row['idusuario']);
+			$this->setDeslogin($row['deslogin']);
+			$this->setDessenha($row['dessenha']);
+			$this->setDtcadastro(new DateTime($row['dtcadastro']));
+		}else{
+			throw new Exception("Não foi possível completar a operação");
+		}
+	}
+
+
+
+
+//-----------------------------CONSTRUTOR TOSTRING---------------------------------------
+
 
 	public function __toString(){
 
-		return json_encode(array(
+		return json_encode(
+			array(
 			'idusuario' => $this->getId(),
 			'deslogin' => $this->getDeslogin(),
 			'dessenha' => $this->getDessenha(),
 			'dtcadastro' => $this->getDtcadastro()->format("d/m/Y")
-		));
+		)
+		);
 
 	}
+
 
 
 //---------------------------GETTER E SETTER-----------------------------------------

@@ -1,10 +1,12 @@
 <?php
 require_once "config.php" ;
 
-$root = new Usuario();
 
-$root->getUser(8);
 
-echo $root  ;
+$result = new Usuario();
+
+$result->getUser(5);
+
+echo $result ;
 
 ?>
