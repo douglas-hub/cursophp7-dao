@@ -23,7 +23,7 @@ class Usuario {
 
 	}
 	public function update($login , $senha){
-		
+
 		$this->setDeslogin($login);
 		$this->setDessenha($senha);
 
@@ -33,8 +33,18 @@ class Usuario {
 			":PASS" =>$this->getDessenha(),
 			":ID" => $this->getId()
 		));
+	}
 
+	public function delete(){
+		$sql = new Sql();
 
+		$sql->query("DELETE FROM tb_usuarios WHERE = idusuario = :ID",array(
+			":ID" => $this->getId()
+		));
+		$this->setId(0);
+		$this->setDeslogin("");
+		$this->setDessenha("");
+		$this->setDtcadastro(new DateTime());
 	}
 
 	public function __construct($login = "", $pass = ""){
