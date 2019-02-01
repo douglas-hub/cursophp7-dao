@@ -2,11 +2,18 @@
 require_once "config.php" ;
 
 
+/*
+$user = new Usuario("borges","8938");
 
-$result = new Usuario();
+$user->insert();
 
-$result->getUser(5);
+echo $user ;
+*/
 
-echo $result ;
+
+$user = new Usuario();
+$user->getUser(5) ;
+$user->update("locoVeio" , "12345");
+echo $user ;
 
 ?>

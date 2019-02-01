@@ -5,15 +5,51 @@ class Usuario {
 	private $deslogin ;
 	private $dessenha ;
 	private $dtcadastro ;
-//--------------------------------------
+//--------------------------------------INSERT----------------------------------------------
 
 
+	public function insert(){
+		$sql = new Sql();
+
+		$result = $sql->select("CALL sp_usuarios_insert(:LOGIN , :PASS)",array(
+			":LOGIN" => $this->getDeslogin() ,
+			":PASS"  => $this->getDessenha()
+		));
+
+		if(count($result) > 0){
+			$this->setData($result[0]);
+		}
 
 
+	}
+	public function update($login , $senha){
+		
+		$this->setDeslogin($login);
+		$this->setDessenha($senha);
+
+		$sql = new Sql();
+		$sql->query("UPDATE tb_usuarios SET deslogin = :LOG , dessenha = :PASS WHERE idusuario = :ID" , array(
+			":LOG" => $this->getDeslogin(),
+			":PASS" =>$this->getDessenha(),
+			":ID" => $this->getId()
+		));
 
 
+	}
+
+	public function __construct($login = "", $pass = ""){
+		$this->setDeslogin($login);
+		$this->setDessenha($pass);
+	}
 
 //---------------------------------------SELECT-------------------------------------------
+	public function setData($row){
+		$this->setId($row['idusuario']);
+		$this->setDeslogin($row['deslogin']);
+		$this->setDessenha($row['dessenha']);
+		$this->setDtcadastro(new DateTime($row['dtcadastro']));
+	}
+
 
 	public function getUser($id){
 		$sql = new Sql();
@@ -23,12 +59,8 @@ class Usuario {
 		));
 
 		if(isset($result)){
-			$row = $result[0];
-
-			$this->setId($row['idusuario']);
-			$this->setDeslogin($row['deslogin']);
-			$this->setDessenha($row['dessenha']);
-			$this->setDtcadastro(new DateTime($row['dtcadastro']));
+	
+			$this->setData($result[0]) ;
 		}
 
 	}
@@ -53,12 +85,7 @@ class Usuario {
 		));
 
 		if(isset($result)){
-			$row = $result[0];
-
-			$this->setId($row['idusuario']);
-			$this->setDeslogin($row['deslogin']);
-			$this->setDessenha($row['dessenha']);
-			$this->setDtcadastro(new DateTime($row['dtcadastro']));
+			$this->setData($result[0]);
 		}else{
 			throw new Exception("Não foi possível completar a operação");
 		}
